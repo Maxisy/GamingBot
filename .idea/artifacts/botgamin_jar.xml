@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="botgamin:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/botgamin_jar</output-path>
+    <root id="archive" name="botgamin.jar">
+      <element id="module-output" name="botgamin.main" />
+    </root>
+  </artifact>
+</component>
