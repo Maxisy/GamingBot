@@ -24,15 +24,15 @@ public class Main {
             if (event.getMessage().getContent().contains("www.facebook.com/groups")) {
                 event.getMessage().delete();
                 long id = event.getMessage().getAuthor().getId();
-                event.getChannel().sendMessage("<@" + id + ">, nie wysylaj wiecej grup z FB!");
+                event.getChannel().sendMessage("> <@" + id + ">, nie wysyłaj więcej grup z FB!");
             }
             if (event.getMessage().getContent().equalsIgnoreCase("!help-mod")) {
                 long id = event.getMessage().getAuthor().getId();
-                event.getChannel().sendMessage("<@" + id + "> potrzebuje tutaj <@&724385014233432084>!");
+                event.getChannel().sendMessage("> <@" + id + "> potrzebuje tutaj <@&724385014233432084>!");
             }
             if (event.getMessage().getContent().equalsIgnoreCase("!help-owner")) {
                 long id = event.getMessage().getAuthor().getId();
-                event.getChannel().sendMessage("<@" + id + "> potrzebuje tutaj <@&725658664689598504>!");
+                event.getChannel().sendMessage("> <@" + id + "> potrzebuje tutaj <@&725658664689598504>!");
             }
             if (event.getMessage().getContent().contains("!pochwal")) {
                 String content = event.getMessage().getContent();
@@ -44,26 +44,26 @@ public class Main {
                                 f.createNewFile();
                             }
                             pochwal(split[1]);
-                            event.getMessage().getChannel().sendMessage("Sukces");
+                            event.getMessage().getChannel().sendMessage("> Sukces.");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 } else {
-                    event.getMessage().getChannel().sendMessage("Nie masz uprawnien!");
+                    event.getMessage().getChannel().sendMessage("> Nie masz uprawnień!");
                 }
             }
             if (event.getMessage().getContent().contains("kto gra")) {
                 if (!event.getMessage().getChannel().getIdAsString().equals("718571030154707074")) {
                     event.getMessage().delete();
-                    event.getMessage().getChannel().sendMessage("Zly kanal, wejdz na <#718571030154707074>");
+                    event.getMessage().getChannel().sendMessage("> Zły kanał, wejdź na <#718571030154707074>");
                 }
             }
             if (event.getMessage().getContent().contains("!py")) {
                 if (!f.exists()) {
-                    event.getMessage().getChannel().sendMessage("> Nie ma zadnych pochwal!");
+                    event.getMessage().getChannel().sendMessage("> Nie ma żadnych pochwał!");
                 } else {
-                    event.getMessage().getChannel().sendMessage("> Pochwaly:");
+                    event.getMessage().getChannel().sendMessage("> Pochwały:");
                     for (Map.Entry<String, Integer> entry : pochwaly.entrySet()) {
                         String key = entry.getKey();
                         int value = entry.getValue();
@@ -79,7 +79,7 @@ public class Main {
                         event.getMessage().getChannel().sendMessage("> Sukces.");
                     }
                 } else {
-                    event.getMessage().getChannel().sendMessage("Nie masz uprawnien!");
+                    event.getMessage().getChannel().sendMessage("> Nie masz uprawnień!");
                 }
             }
             if (event.getMessage().getContent().contains("!powitaj")) {
@@ -87,10 +87,10 @@ public class Main {
                     if (event.getMessage().getAuthor().isServerAdmin()) {
                         String[] split = event.getMessage().getContent().split(" ");
                         event.getMessage().getChannel().sendMessage("Witaj na serwerze " + split[1] + "! " +
-                                "Zapoznaj sie z <#718563898021773433>, dodaj sobie role na <#718500968408285284>," +
-                                " mozesz takze przeczytac <#718510269898162238> jesli chcesz.");
+                                "Zapoznaj się z <#718563898021773433>, dodaj sobie role na <#718500968408285284>," +
+                                " możesz także przeczytać <#718510269898162238> jeśli chcesz.");
                     } else {
-                        event.getMessage().getChannel().sendMessage("Nie masz uprawnien!");
+                        event.getMessage().getChannel().sendMessage("Nie masz uprawnień!");
                     }
                 }
             }
@@ -126,10 +126,4 @@ public class Main {
         }
 
     }
-
-//    public static void sendPochwalonoMessage(String[] split, DiscordApi api) {
-//        api.getTextChannelById("727587187306266755").ifPresent(textChannel -> {
-//            textChannel.sendMessage(" > Pochwalono " + split[1]);
-//        });
-//    }
 }
