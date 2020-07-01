@@ -82,6 +82,18 @@ public class Main {
                     event.getMessage().getChannel().sendMessage("Nie masz uprawnien!");
                 }
             }
+            if (event.getMessage().getContent().contains("!powitaj")) {
+                if (event.getMessage().getContent().contains(" ")) {
+                    if (event.getMessage().getAuthor().isServerAdmin()) {
+                        String[] split = event.getMessage().getContent().split(" ");
+                        event.getMessage().getChannel().sendMessage("Witaj na serwerze " + split[1] + "! " +
+                                "Zapoznaj sie z <#718563898021773433>, dodaj sobie role na <#718500968408285284>," +
+                                " mozesz takze przeczytac <#718510269898162238> jesli chcesz.");
+                    } else {
+                        event.getMessage().getChannel().sendMessage("Nie masz uprawnien!");
+                    }
+                }
+            }
         });
 
     }
