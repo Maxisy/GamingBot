@@ -15,7 +15,8 @@ public class Main {
 
     public static void main(String[] args) {
         String token = Private.TOKEN;
-        File f = new File(fileName);
+        File file = new File(fileName);
+
 
 
         DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
@@ -40,8 +41,8 @@ public class Main {
                     if (content.contains(" ")) {
                         try {
                             String[] split = content.split(" ");
-                            if (!f.exists()) {
-                                f.createNewFile();
+                            if (!file.exists()) {
+                                file.createNewFile();
                             }
                             pochwal(split[1]);
                             event.getMessage().getChannel().sendMessage("> Sukces.");
@@ -60,7 +61,7 @@ public class Main {
                 }
             }
             if (event.getMessage().getContent().contains("!py")) {
-                if (!f.exists()) {
+                if (!file.exists()) {
                     event.getMessage().getChannel().sendMessage("> Nie ma żadnych pochwał!");
                 } else {
                     event.getMessage().getChannel().sendMessage("> Pochwały:");
@@ -72,14 +73,39 @@ public class Main {
                 }
             }
             if (event.getMessage().getContent().contains("!cp")) {
-                if (event.getMessage().getAuthor().getIdAsString().equals("434346676937818122")) {
+                if (event.getMessage().getAuthor().isServerAdmin()) {
                     if (event.getMessage().getContent().contains(" ")) {
-                        String[] splitted = event.getMessage().getContent().split(" ");
-                        pochwaly.remove(splitted[1]);
-                        event.getMessage().getChannel().sendMessage("> Sukces.");
+                        try {
+                            String[] splitted = event.getMessage().getContent().split(" ");
+                            File temp = File.createTempFile("file", ".txt", file.getParentFile());
+                            String delete = splitted[1];
+                            String charset = "UTF-8";
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+                            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
+                            for (String line; (line = reader.readLine()) != null;) {
+                                line = line.replace(delete, "");
+                                writer.println(line);
+                            }
+                            reader.close();
+                            writer.close();
+                            file.delete();
+                            temp.renameTo(file);
+                            pochwaly.remove(delete);
+                            event.getMessage().getChannel().sendMessage("> Sukces.");
+                        } catch (IOException e) {
+                            event.getChannel().sendMessage(e.getMessage());
+                        }
                     }
                 } else {
                     event.getMessage().getChannel().sendMessage("> Nie masz uprawnień!");
+                }
+            }
+            if (event.getMessage().getContent().equalsIgnoreCase("!cpall")) {
+                if (event.getMessage().getAuthor().isServerAdmin()) {
+                    file.delete();
+                    event.getChannel().sendMessage("> Sukces.");
+                } else {
+                    event.getChannel().sendMessage("> Nie masz uprawnień!");
                 }
             }
             if (event.getMessage().getContent().contains("!powitaj")) {
