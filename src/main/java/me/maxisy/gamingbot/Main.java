@@ -103,6 +103,7 @@ public class Main {
             if (event.getMessage().getContent().equalsIgnoreCase("!cpall")) {
                 if (event.getMessage().getAuthor().isServerAdmin()) {
                     file.delete();
+                    pochwaly.clear();
                     event.getChannel().sendMessage("> Sukces.");
                 } else {
                     event.getChannel().sendMessage("> Nie masz uprawnień!");
