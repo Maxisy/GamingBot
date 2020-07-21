@@ -120,6 +120,7 @@ public class Main {
                         event.getMessage().getChannel().sendMessage("Nie masz uprawnień!");
                     }
                 }
+                //test
             }
         });
 
