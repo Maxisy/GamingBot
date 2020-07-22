@@ -16,9 +16,6 @@ public class Main {
     public static void main(String[] args) {
         String token = Private.TOKEN;
         File file = new File(fileName);
-
-
-
         DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
 
         api.addMessageCreateListener(event -> {
@@ -41,11 +38,13 @@ public class Main {
                     if (content.contains(" ")) {
                         try {
                             String[] split = content.split(" ");
-                            if (!file.exists()) {
-                                file.createNewFile();
+                            if (split[0].equalsIgnoreCase("!pochwal")) {
+                                if (!file.exists()) {
+                                    file.createNewFile();
+                                }
+                                pochwal(split[1]);
+                                event.getMessage().getChannel().sendMessage("> Sukces.");
                             }
-                            pochwal(split[1]);
-                            event.getMessage().getChannel().sendMessage("> Sukces.");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -60,7 +59,7 @@ public class Main {
                     event.getMessage().getChannel().sendMessage("> Zły kanał, wejdź na <#718571030154707074>");
                 }
             }
-            if (event.getMessage().getContent().contains("!py")) {
+            if (event.getMessage().getContent().equalsIgnoreCase("!py")) {
                 if (!file.exists()) {
                     event.getMessage().getChannel().sendMessage("> Nie ma żadnych pochwał!");
                 } else {
@@ -77,21 +76,23 @@ public class Main {
                     if (event.getMessage().getContent().contains(" ")) {
                         try {
                             String[] splitted = event.getMessage().getContent().split(" ");
-                            File temp = File.createTempFile("file", ".txt", file.getParentFile());
-                            String delete = splitted[1];
-                            String charset = "UTF-8";
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
-                            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
-                            for (String line; (line = reader.readLine()) != null;) {
-                                line = line.replace(delete, "");
-                                writer.println(line);
+                            if (splitted[0].equalsIgnoreCase("!cp")) {
+                                File temp = File.createTempFile("file", ".txt", file.getParentFile());
+                                String delete = splitted[1];
+                                String charset = "UTF-8";
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+                                PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
+                                for (String line; (line = reader.readLine()) != null; ) {
+                                    line = line.replace(delete, "");
+                                    writer.println(line);
+                                }
+                                reader.close();
+                                writer.close();
+                                file.delete();
+                                temp.renameTo(file);
+                                pochwaly.remove(delete);
+                                event.getMessage().getChannel().sendMessage("> Sukces.");
                             }
-                            reader.close();
-                            writer.close();
-                            file.delete();
-                            temp.renameTo(file);
-                            pochwaly.remove(delete);
-                            event.getMessage().getChannel().sendMessage("> Sukces.");
                         } catch (IOException e) {
                             event.getChannel().sendMessage(e.getMessage());
                         }
@@ -120,9 +121,10 @@ public class Main {
                         event.getMessage().getChannel().sendMessage("Nie masz uprawnień!");
                     }
                 }
-                //test
             }
         });
+
+
 
     }
 
