@@ -2,6 +2,8 @@ package me.maxisy.gamingbot;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.permission.Role;
+import org.javacord.api.entity.user.User;
 
 import java.io.*;
 import java.util.HashMap;
@@ -122,9 +124,32 @@ public class Main {
                     }
                 }
             }
+            if (event.getMessage().getContent().contains("!zatwierdz")) {
+                if (event.getMessage().getContent().contains(" ")) {
+                    if (event.getMessage().getAuthor().isServerAdmin()) {
+                        String[] split = event.getMessage().getContent().split(" ");
+                        if (split[0].equalsIgnoreCase("!zatwierdz")) {
+                            String uId = split[1].replaceAll("<", "").
+                                    replaceAll(">", "").
+                                    replaceAll("@", "");
+                            uId = uId.replaceAll("!", "").replaceAll("&", "");
+                            event.getServer().get().addRoleToUser(event.getServer().get().getMemberById(uId).get(),
+                                    event.getServer().get().getRoleById("718759264591544391").get());
+                            event.getServer().get().removeRoleFromUser(event.getServer().get().getMemberById(uId).get(),
+                                    event.getServer().get().getRoleById("718956119502094348").get());
+                            event.getChannel().sendMessage("> Sukces.");
+                        }
+                    } else {
+                        event.getChannel().sendMessage("> Nie masz uprawnień!");
+                    }
+                }
+            }
         });
 
-
+        api.addServerMemberJoinListener(event -> {
+            Role role = event.getServer().getRoleById("718956119502094348").get();
+            event.getUser().addRole(role);
+        });
 
     }
 
