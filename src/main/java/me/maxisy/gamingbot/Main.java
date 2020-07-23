@@ -2,18 +2,19 @@ package me.maxisy.gamingbot;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.permission.Role;
-import org.javacord.api.entity.user.User;
 
+import java.awt.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class Main {
     public static final String fileName = "pochwaly.txt";
-
-    static Map<String, Integer> pochwaly = new HashMap<>();
 
     public static void main(String[] args) {
         String token = Private.TOKEN;
@@ -65,11 +66,29 @@ public class Main {
                 if (!file.exists()) {
                     event.getMessage().getChannel().sendMessage("> Nie ma żadnych pochwał!");
                 } else {
-                    event.getMessage().getChannel().sendMessage("> Pochwały:");
-                    for (Map.Entry<String, Integer> entry : pochwaly.entrySet()) {
-                        String key = entry.getKey();
-                        int value = entry.getValue();
-                        event.getMessage().getChannel().sendMessage("> " + key + ": " + value);
+                    try (
+                            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+                    ) {
+                        String line = null;
+                        event.getChannel().sendMessage("> Pochwały:");
+                        int i = 0;
+                        Map<String, Integer> ps = new HashMap<>();
+                        while ((line = reader.readLine()) != null) {
+                            if (line.equalsIgnoreCase("")) {
+                            } else if (!ps.containsKey(line)) {
+                                ps.put(line, 1);
+                            } else {
+                                i = ps.get(line) + 1;
+                                ps.put(line, i);
+                            }
+                        }
+                        Set<Map.Entry<String, Integer>> entries = ps.entrySet();
+                        for (Map.Entry<String, Integer> entry : entries) {
+                            event.getChannel().sendMessage(entry.getKey() + ": " + entry.getValue());
+                        }
+                        ps.clear();
+                    } catch (IOException e) {
+                        event.getChannel().sendMessage("Wystąpił błąd: " + e.getMessage());
                     }
                 }
             }
@@ -92,7 +111,6 @@ public class Main {
                                 writer.close();
                                 file.delete();
                                 temp.renameTo(file);
-                                pochwaly.remove(delete);
                                 event.getMessage().getChannel().sendMessage("> Sukces.");
                             }
                         } catch (IOException e) {
@@ -106,7 +124,6 @@ public class Main {
             if (event.getMessage().getContent().equalsIgnoreCase("!cpall")) {
                 if (event.getMessage().getAuthor().isServerAdmin()) {
                     file.delete();
-                    pochwaly.clear();
                     event.getChannel().sendMessage("> Sukces.");
                 } else {
                     event.getChannel().sendMessage("> Nie masz uprawnień!");
@@ -143,6 +160,33 @@ public class Main {
                         event.getChannel().sendMessage("> Nie masz uprawnień!");
                     }
                 }
+
+            }
+            if (event.getMessage().getContent().contains("!komendy")) {
+                String[] split = event.getMessage().getContent().split(" ");
+                if (split[0].equalsIgnoreCase("!komendy")) {
+                    if (split.length == 2) {
+                        if (split[1].equalsIgnoreCase("admin")) {
+                            new MessageBuilder().setEmbed(new EmbedBuilder().
+                                    setTitle("Komendy administratorskie:").
+                                    setDescription("`!pochwal @user` - pochwala użytkownika;\n" +
+                                            "`!cp @user` - usuwa pochwałę użytkownika;\n" +
+                                            "`!cpall` - usuwa wszystkie pochwały;\n" +
+                                            "`!powitaj @user` - wita użytkownika;\n" +
+                                            "`!zatwierdz @user` - zatwierdza użytkownika.").
+                                    setColor(Color.ORANGE)).
+                                    send(event.getMessage().getChannel());
+                        }
+                    } else {
+                        new MessageBuilder().setEmbed(new EmbedBuilder().
+                                setTitle("Komendy:").
+                                setDescription("`!help-mod` - wzywa Moderatora;\n" +
+                                        "`!help-owner` - wzywa Właściciela;\n" +
+                                        "`!py` - wyświetla pochwały;").
+                                setColor(Color.ORANGE)).send(event.getMessage().getChannel());
+                    }
+
+                }
             }
         });
 
@@ -160,25 +204,8 @@ public class Main {
         ) {
             writer.write(u);
             writer.newLine();
-            pochwaly.put(u, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        try (
-                FileReader fr = new FileReader(fileName);
-                BufferedReader reader = new BufferedReader(fr)
-        ) {
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                if (line.equals(u)) {
-                    int ps = pochwaly.get(u);
-                    pochwaly.put(u, ++ps);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }
